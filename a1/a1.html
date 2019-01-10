@@ -5,16 +5,208 @@
 	<style>
 		svg {
 			background: pink;
+			width: 220;
+			height: 220;
 		}
 
 		rect {
 			stroke: white;
 			fill: blue;
 		}
+
+		path {
+			stroke: black;
+			stroke-width: 1;
+			fill-opacity: 0;
+		}
+
+		line {
+			stroke: black;
+			stroke-width: 1;
+		}
+
+		circle {
+			stroke: black;
+			stroke-width: 1;
+			fill: green;
+		}
+
 	</style>
 </head>
 
 <body>
+
+	<table>
+		<tr>
+			<th>
+				Dataset 1 X Bargraph
+				<svg>
+					<!-- y + height == 220 -->
+					<rect x="10" y="120" width="10" height="100"></rect>
+					<rect x="20" y="140" width="10" height="80"></rect>
+					<rect x="30" y="90" width="10" height="130"></rect>
+					<rect x="40" y="130" width="10" height="90"></rect>
+					<rect x="50" y="110" width="10" height="110"></rect>
+					<rect x="60" y="80" width="10" height="140"></rect>
+					<rect x="70" y="160" width="10" height="60"></rect>
+					<rect x="80" y="180" width="10" height="40"></rect>
+					<rect x="90" y="100" width="10" height="120"></rect>
+					<rect x="100" y="150" width="10" height="70"></rect>
+					<rect x="110" y="170" width="10" height="50"></rect>
+				</svg>
+			</th>
+			<th>
+				Dataset 1 Y Bargraph
+				<svg>
+					<!-- y + height == 220 -->
+					<rect x="10" y="145.4" width="10" height="74.6"></rect>
+					<rect x="20" y="152.3" width="10" height="67.7"></rect>
+					<rect x="30" y="95.6" width="10" height="124.4"></rect>
+					<rect x="40" y="148.9" width="10" height="71.1"></rect>
+					<rect x="50" y="141.9" width="10" height="78.1"></rect>
+					<rect x="60" y="131.6" width="10" height="88.4"></rect>
+					<rect x="70" y="150.2" width="10" height="69.8"></rect>
+					<rect x="80" y="166.1" width="10" height="53.9"></rect>
+					<rect x="90" y="138.5" width="10" height="81.5"></rect>
+					<rect x="100" y="155.8" width="10" height="64.2"></rect>
+					<rect x="110" y="162.7" width="10" height="57.3"></rect>
+				</svg>
+			</th>
+			<th>
+				Dataset 1 X Linechart
+				<svg>
+					<path d="M 10 120
+							 L 20 140
+							 L 30 90
+							 L 40 130
+							 L 50 110
+							 L 60 80
+							 L 70 160
+							 L 80 180
+							 L 90 100
+							 L 100 150
+							 L 110 170">
+					</path>
+				</svg>
+			</th>
+			<th>
+				Dataset 1 Y Linechart
+				<svg>
+					<line x1="10" y1="145.4" x2="20" y2="152.3"></line>
+					<line x1="20" y1="152.3" x2="30" y2="95.6"></line>
+					<line x1="30" y1="95.6" x2="40" y2="148.9"></line>
+					<line x1="40" y1="148.9" x2="50" y2="141.9"></line>
+					<line x1="50" y1="141.9" x2="60" y2="131.6"></line>
+					<line x1="60" y1="131.6" x2="70" y2="150.2"></line>
+					<line x1="70" y1="150.2" x2="80" y2="166.1"></line>
+					<line x1="80" y1="166.1" x2="90" y2="138.5"></line>
+					<line x1="90" y1="138.5" x2="100" y2="155.8"></line>
+					<line x1="100" y1="155.8" x2="110" y2="162.7"></line>
+				</svg>
+			</th>
+			<th>
+				Dataset 1 Scatterplot
+				<svg>
+					<!-- plotted y = 220 - actual y -->
+					<circle cx="100" cy="145.4" r="5"></circle>
+					<circle cx="80" cy="152.3" r="5"></circle>
+					<circle cx="130" cy="95.6" r="5"></circle>
+					<circle cx="90" cy="148.9" r="5"></circle>
+					<circle cx="110" cy="141.9" r="5"></circle>
+					<circle cx="140" cy="131.6" r="5"></circle>
+					<circle cx="60" cy="160.2" r="5"></circle>
+					<circle cx="40" cy="166.1" r="5"></circle>
+					<circle cx="120" cy="138.5" r="5"></circle>
+					<circle cx="70" cy="155.8" r="5"></circle>
+					<circle cx="50" cy="162.7" r="5"></circle>
+				</svg>
+			</th>
+		</tr>
+		<tr>
+			<th>
+				Dataset 2 X Bargraph
+				<svg>
+					<!-- y + height == 220 -->
+					<rect x="10" y="140" width="10" height="80"></rect>
+					<rect x="20" y="140" width="10" height="80"></rect>
+					<rect x="30" y="140" width="10" height="80"></rect>
+					<rect x="40" y="140" width="10" height="80"></rect>
+					<rect x="50" y="140" width="10" height="80"></rect>
+					<rect x="60" y="140" width="10" height="80"></rect>
+					<rect x="70" y="140" width="10" height="80"></rect>
+					<rect x="80" y="30" width="10" height="190"></rect>
+					<rect x="90" y="140" width="10" height="80"></rect>
+					<rect x="100" y="140" width="10" height="80"></rect>
+					<rect x="110" y="140" width="10" height="80"></rect>
+					</svg>
+			</th>
+			<th>
+				Dataset 2 Y Bargraph
+				<svg>
+					<rect x="10" y="154.2" width="10" height="65.8"></rect>
+					<rect x="20" y="162.4" width="10" height="57.6"></rect>
+					<rect x="30" y="142.9" width="10" height="77.1"></rect>
+					<rect x="40" y="131.6" width="10" height="88.4"></rect>
+					<rect x="50" y="135.3" width="10" height="84.7"></rect>
+					<rect x="60" y="149.6" width="10" height="70.4"></rect>
+					<rect x="70" y="167.5" width="10" height="52.5"></rect>
+					<rect x="80" y="95" width="10" height="125"></rect>
+					<rect x="90" y="164.4" width="10" height="55.6"></rect>
+					<rect x="100" y="140.9" width="10" height="79.1"></rect>
+					<rect x="110" y="151.1" width="10" height="68.9"></rect>
+				</svg>
+			</th>
+			<th>
+				Dataset 2 X Linechart
+				<svg>
+					<path d="M 10 140
+						     L 20 140
+						     L 30 140
+						     L 40 140
+						     L 50 140
+						     L 60 140
+						     L 70 140
+						     L 80 30
+						     L 90 140
+						     L 100 140
+						     L 110 140">
+			   		</path>
+				</svg>
+			</th>
+			<th>
+				Dataset 2 Y Linechart
+				<svg>
+					<line x1="10" y1="154.2" x2="20" y2="162.4"></line>
+					<line x1="20" y1="162.4" x2="30" y2="142.9"></line>
+					<line x1="30" y1="142.9" x2="40" y2="131.6"></line>
+					<line x1="40" y1="131.6" x2="50" y2="135.3"></line>
+					<line x1="50" y1="135.3" x2="60" y2="149.6"></line>
+					<line x1="60" y1="149.6" x2="70" y2="167.5"></line>
+					<line x1="70" y1="167.5" x2="80" y2="95"></line>
+					<line x1="80" y1="95" x2="90" y2="164.4"></line>
+					<line x1="90" y1="164.4" x2="100" y2="140.9"></line>
+					<line x1="100" y1="140.9" x2="110" y2="151.1"></line>
+
+				</svg>
+			</th>
+			<th>
+				Dataset 2 Scatterplot
+				<svg>
+					<circle cx="80" cy="154.2" r="5"></circle>
+					<circle cx="80" cy="162.4" r="5"></circle>
+					<circle cx="80" cy="142.9" r="5"></circle>
+					<circle cx="80" cy="131.6" r="5"></circle>
+					<circle cx="80" cy="135.3" r="5"></circle>
+					<circle cx="80" cy="149.6" r="5"></circle>
+					<circle cx="80" cy="167.5" r="5"></circle>
+					<circle cx="190" cy="95" r="5"></circle>
+					<circle cx="80" cy="164.4" r="5"></circle>
+					<circle cx="80" cy="140.9" r="5"></circle>
+					<circle cx="80" cy="151.1" r="5"></circle>
+				</svg>
+			</th>
+		</tr>
+	</table>
 
 </body>
 
