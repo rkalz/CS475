@@ -1,0 +1,8 @@
+*.pdf
+*.aux
+*.log
+*.synctex.gz
+*.zip
+*.DS_Store
+*.png
+*.jpg
