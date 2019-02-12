@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Circles demo</title>
+    <script src="https://d3js.org/d3.v5.js"></script>
+</head>
+
+<body>
+
+    <script>
+        // USE D3 to assign width and height of 220 and 220 to the svg and a background color of your liking
+        svg = d3.select("body").append("svg")
+            .attr("width", 220)
+            .attr("height", 220)
+            .style("background", "lightblue");
+
+        d3.select("body").append("br");
+        d3.select("body").append("button").text("Staircase").on("click", stairCase);
+        d3.select("body").append("button").text("Reset").on("click", reset);
+        
+
+        // Task 1
+        // Draw bar chart (similar to assignment 1) using the following data
+        // The number corresponds to the height of the bar.
+        // You need to use d3's data and enter function
+        // assign radius, color, style of your own liking
+        rectangle_height_data = [100, 80, 130, 90, 110, 140, 60, 40, 120, 70, 50];
+        let x = 20
+        const y = 100
+        for (let i = 0; i < rectangle_height_data.length; i++) {
+            const height = rectangle_height_data[i]
+
+            svg.append("rect")
+                .attr("stroke", "red")
+                .attr("width", 15)
+                .attr("height", height)
+                .attr("x", x)
+                .attr("y", 200 - height)
+
+            x += 15
+        }
+
+
+
+        // Task 2
+        // create anonymous function to assign height and y value of the bars in correspondence of a staircase
+        // Use the default index i (of function(d, i)) to create the height and y value
+        function stairCase()
+        {
+            svg.selectAll("rect").nodes().forEach((rect, i) => {
+                const height = 10 * i + 10
+                rect.setAttribute("height", height)
+                rect.setAttribute("y", 200 - height)
+            })
+        }
+
+        // Task 2
+        // Reset height and y value of the bars back to the original size
+        function reset()
+        {
+            svg.selectAll("rect").nodes().forEach((rect, i) => {
+                const height = rectangle_height_data[i]
+                rect.setAttribute("height", height)
+                rect.setAttribute("y", 200 - height)
+            })
+        }
+
+    </script>
+
+</body>
+
+</html>
