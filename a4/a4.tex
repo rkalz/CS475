@@ -1,0 +1,44 @@
+\documentclass{article}
+
+\title{CS 475: Assignment 4}
+\date{February 12, 2019}
+\author{Rofael Aleezada}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm]{geometry}
+\usepackage{graphicx}
+
+\begin{document}
+	\maketitle
+	
+	\section{Question 8}
+		\begin{center}
+			\includegraphics[scale=0.25]{q8.png}
+		\end{center}
+		Huffman Encodings
+		\begin{itemize}
+			\item 6 - 0
+			\item 1 - 10
+			\item 4 - 110
+			\item 3 - 1110
+			\item 5 - 11110
+			\item 2 - 111110
+			\item 0 - 111111
+		\end{itemize}
+		Image Size \\
+		\indent ${6000 * 1 + 2000 * 2 + 1000 * 3 + 500 * 4 + 400 * 5 + 50 * 6 + 50 * 6 = }$ \\
+		\indent ${6000 + 4000 + 3000 + 2000 + 2000 + 200 + 300 + 300}$ \\
+		\indent \textbf{17800 bits} \\
+		Compression Ratio \\
+		\indent Original Image = ${100 * 100 * 4 = }$ 40000 bits \\
+		\indent ${40000 / 17800 = }$ \textbf{2.247}
+		
+	\section{Question 9}
+		Rainbow color maps are not recommend for several reasons.
+		\begin{itemize}
+			\item The color selections can exaggerate differences (0.59 and 0.61 may have very different colors even though they are very close)
+			\item Stark differences in color selections can be confusing (does green to red mean better to worse?)
+			\item Color intensity can be misleading (is it correlated to what the data represents?)
+			\item It can be easy to look too much into the color selection (poor color selection can be extremely distracting, especially from the data being shown)
+		\end{itemize}
+		
+\end{document}
