@@ -44,8 +44,6 @@
         {
             const height = (_, i) => 10 * i + 10;
             svg.selectAll("rect")
-                .attr("stroke", "red")
-                .attr("width", 15)
                 .attr("height", height)
                 .attr("x", (_, i) => 15 * i + 10)
                 .attr("y", (_, i) => 200 - height(_, i))

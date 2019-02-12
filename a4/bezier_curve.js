@@ -21,18 +21,20 @@ const bezier_func = t => {
 }
 
 const add_plot_points_and_draw = () => {
-    // Remove old points
     svg.selectAll("#plotpoints").remove()
     svg.selectAll("#plotlines").remove()
 
     const count = pointSlider.property("value")
     let points = []
 
-    // draw lines connecting circles
+    // calculate point positions
     for (let i = 0; i <= count; i++) {
         points.push(bezier_func(i / count));
     }
 
+    // draw circles for plot
+    // pointer-events lets us click through
+    // se we can easily click control point
     svg.selectAll("#plotpoints")
         .data(points)
         .enter()
@@ -40,17 +42,18 @@ const add_plot_points_and_draw = () => {
         .attr("fill", "red")
         .attr("id", "plotpoints")
         .attr("r", 3)
+        .style("pointer-events", "none")
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
-        .style("pointer-events", "none")
 
     svg.selectAll("#plotlines")
-        .data(points.reduce((output, curr, i, src) => {
-            if (i > 0) output.push({
-                x1: src[i-1].x, y1: src[i-1].y,
-                x2: curr.x,     y2: curr.y
+        .data(points.reduce((pairs, d, i, points) => {
+            // Convert list of points to pairs for line drawing
+            if (i > 0) pairs.push({
+                x1: points[i-1].x, y1: points[i-1].y,
+                x2: d.x,           y2: d.y
             })
-            return output
+            return pairs
         }, []))
         .enter()
         .append("line")
@@ -82,7 +85,7 @@ svg.selectAll("circle")
     .attr("cy", d => d.y)
     .call(d3.drag().on("drag", (d, i) => {
         // Move control point
-        // Update bezier function and curce
+        // Update bezier function and curve
         d3.select("#controlpoint" + i)
             .attr("cx", d.x = d3.event.x)
             .attr("cy", d.y = d3.event.y)
@@ -104,11 +107,12 @@ pointSlider = d3.select("body").append("div")
         add_plot_points_and_draw()
     })
 
+// shows number of plot points
 const textBox = d3.select("body").append("textarea")
     .attr("readonly", "")
     .style("border", 0)
     .style("resize", "none")
     .property("value", pointSlider.property("value"))
 
-// Draw first curce
+// Draw first curve
 add_plot_points_and_draw()
