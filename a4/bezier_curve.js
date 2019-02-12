@@ -89,11 +89,26 @@ svg.selectAll("circle")
         d3.select("#controlpoint" + i)
             .attr("cx", d.x = d3.event.x)
             .attr("cy", d.y = d3.event.y)
+
+        d3.select("#controltext" + i)
+            .attr("x", d.x - 10)
+            .attr("y", d.y - 10)
         add_plot_points_and_draw()
     }))
 
+// draw labels
+svg.selectAll("text")
+    .data(control_point_pos)
+    .enter()
+    .append("text")
+    .attr("x", d => d.x - 10)
+    .attr("y", d => d.y - 10)
+    .attr("id", (_, i) => "controltext" + i)
+    .text((_, i) => "P" + i)
+
 // Build the slider
-pointSlider = d3.select("body").append("div")
+pointSlider = d3.select("body")
+    .append("div")
     .attr("class", "slidecontainer")
     .append("input")
     .attr("type", "range")
