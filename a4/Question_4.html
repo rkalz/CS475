@@ -25,15 +25,15 @@
         // You have to use D3's data and enter function
         // // assign radius, color, style of your own liking
         const circle_data = [{ x: 100, y: 74.6 }, { x: 80, y: 67.7 }, { x: 130, y: 124.4 }, { x: 90, y: 71.1 }, { x: 110, y: 78.1 }, { x: 140, y: 88.4}, { x: 60, y: 69.8}, { x: 40, y: 53.9 }, { x: 120, y: 81.5 }, { x: 70, y: 64.2 }, { x: 50, y: 57.3 }];
-        for (let i = 0; i < circle_data.length; i++) {
-            svg.append("circle")
-                .attr("r", "3px")
-                .attr("fill", "red")
-                .attr("cx", circle_data[i].x)
-                .attr("cy", 220 - circle_data[i].y)
-        }
-
-        
+        svg.selectAll("circle")
+            .data(circle_data)
+            .enter()
+            .append("circle")
+            .attr("r", "3px")
+            .attr("fill", "red")
+            .attr("cx", d => d.x)
+            .attr("cy", d => 200 - d.y)
+     
     </script>
 
 </body>

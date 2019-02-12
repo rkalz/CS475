@@ -27,44 +27,38 @@
         // You need to use d3's data and enter function
         // assign radius, color, style of your own liking
         const rectangle_height_data = [100, 80, 130, 90, 110, 140, 60, 40, 120, 70, 50];
-        let x = 20
-        const y = 100
-        for (let i = 0; i < rectangle_height_data.length; i++) {
-            const height = rectangle_height_data[i]
-
-            svg.append("rect")
+        svg.selectAll("rect")
+                .data(rectangle_height_data)
+                .enter()
+                .append("rect")
                 .attr("stroke", "red")
                 .attr("width", 15)
-                .attr("height", height)
-                .attr("x", x)
-                .attr("y", 200 - height)
-
-            x += 15
-        }
-
-
+                .attr("height", d => d)
+                .attr("x", (_, i) => 15 * i + 10)
+                .attr("y", d => 200 - d)
 
         // Task 2
         // create anonymous function to assign height and y value of the bars in correspondence of a staircase
         // Use the default index i (of function(d, i)) to create the height and y value
         function stairCase()
         {
-            svg.selectAll("rect").nodes().forEach((rect, i) => {
-                const height = 10 * i + 10
-                rect.setAttribute("height", height)
-                rect.setAttribute("y", 200 - height)
-            })
+            const height = (_, i) => 10 * i + 10;
+            svg.selectAll("rect")
+                .attr("stroke", "red")
+                .attr("width", 15)
+                .attr("height", height)
+                .attr("x", (_, i) => 15 * i + 10)
+                .attr("y", (_, i) => 200 - height(_, i))
         }
 
         // Task 2
         // Reset height and y value of the bars back to the original size
         function reset()
         {
-            svg.selectAll("rect").nodes().forEach((rect, i) => {
-                const height = rectangle_height_data[i]
-                rect.setAttribute("height", height)
-                rect.setAttribute("y", 200 - height)
-            })
+            svg.selectAll("rect")
+                .attr("height", d => d)
+                .attr("x", (_, i) => 15 * i + 10)
+                .attr("y", d => 200 - d)
         }
 
     </script>

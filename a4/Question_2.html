@@ -28,9 +28,9 @@
         // Task 1
         // USE D3 to assign width and height of 220 and 220 to the svg and a background color of your liking
         const svg = d3.select("svg")
-        svg.style("width", "220px")
-        svg.style("height", "220px")
-        svg.style("background-color", "green")
+            .style("width", "220px")
+            .style("height", "220px")
+            .style("background-color", "green")
 
         // Task 2
         // Draw bar chart (similar to assignment 1) using the following data
@@ -38,24 +38,13 @@
         // You need to use d3's data function
         // assign radius, color, style of your own liking
         const rect_data_height = [100, 80, 130, 90, 110, 140, 60, 40, 120, 70, 50];
-        const rects = svg.selectAll("rect")
-
-        let x = 10
-        const y = 100
-
-        for (let i = 0; i < rects.size(); i++) {
-            const rect = rects.nodes()[i]
-            const height = rect_data_height[i]
-
-            rect.setAttribute("stroke", "red")
-            rect.setAttribute("width", 15)
-            rect.setAttribute("height", height)
-
-            rect.setAttribute("x", x)
-            rect.setAttribute("y", 200 - height)
-
-            x += 15
-        }
+        svg.selectAll("rect")
+            .attr("stroke", "red")
+            .attr("width", 15)
+            .data(rect_data_height)
+            .attr("height", d => d)
+            .attr("x", (d, i) => (15 * i + 10))
+            .attr("y", d => 200 - d)
     </script>
 
 </body>

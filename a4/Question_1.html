@@ -28,9 +28,9 @@
         // Task 1
         // USE D3 to assign width and height attribute of 220 and 220 to the svg and a background color of your liking
         const svg = d3.select("svg")
-        svg.style("width", "220px")
-        svg.style("height", "220px")
-        svg.style("background-color", "green")
+            .style("width", "220px")
+            .style("height", "220px")
+            .style("background-color", "green")
 
 
         // Task 2
@@ -38,16 +38,12 @@
         // You need to use d3's data method
         // assign radius, color, style of your own liking
         const circle_data = [{ x: 100, y: 74.6 }, { x: 80, y: 67.7 }, { x: 130, y: 124.4 }, { x: 90, y: 71.1 }, { x: 110, y: 78.1 }, { x: 140, y: 88.4}, { x: 60, y: 69.8}, { x: 40, y: 53.9 }, { x: 120, y: 81.5 }, { x: 70, y: 64.2 }, { x: 50, y: 57.3 }];
-        const circles = svg.selectAll("circle")
-        for (let i = 0; i < circles.size(); i++) {
-            const circle = circles.nodes()[i]
-            circle.setAttribute("r", "3px")
-            circle.setAttribute("fill", "red")
-
-            circle.setAttribute("cx", circle_data[i].x)
-            circle.setAttribute("cy", 220 - circle_data[i].y)
-        }
-
+        svg.selectAll("circle")
+            .attr("r", "3px")
+            .attr("fill", "red")
+            .data(circle_data)
+            .attr("cx", d => d.x)
+            .attr("cy", d => 200 - d.y)
     </script>
 
 </body>

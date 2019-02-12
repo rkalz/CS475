@@ -25,26 +25,16 @@
         // The number corresponds to the height of the bar.
         // You need to use d3's data and enter function
         // assign radius, color, style of your own liking
-        const rectangle_height_data = [100, 80, 130, 90, 110, 140, 60, 40, 120, 70, 50];
-
-        let x = 10
-        const y = 100
-
-        for (let i = 0; i < rectangle_height_data.length; i++) {
-            const height = rectangle_height_data[i]
-
-            svg.append("rect")
-                .attr("stroke", "red")
-                .attr("width", 15)
-                .attr("height", height)
-                .attr("x", x)
-                .attr("y", 200 - height)
-
-            x += 15
-        }
-
-
-
+        const rect_data_height = [100, 80, 130, 90, 110, 140, 60, 40, 120, 70, 50];
+        svg.selectAll("rect")
+            .data(rect_data_height)
+            .enter()
+            .append("rect")
+            .attr("stroke", "red")
+            .attr("width", 15)
+            .attr("height", d => d)
+            .attr("x", (d, i) => (15 * i + 10))
+            .attr("y", d => 200 - d)
 
     </script>
 
