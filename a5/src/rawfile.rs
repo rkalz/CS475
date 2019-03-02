@@ -37,66 +37,54 @@ impl RawFile {
         if a > b {
             return RawFile::get_inter_pos(x, b, a);
         }
-        a + ((x - a) / (b - a))
+        (x - a) / (b - a)
     }
 
     pub fn build_and_write_isolines(&self, isoval: f32, path: &str) -> io::Result<()> {
         let mut vert_pos : HashMap<Point, usize> = HashMap::new();
         let mut verts : Vec<Point> = Vec::new();
         let mut edges : Vec<(usize, usize)> = Vec::new();
-        for i in 0..self.height {
-            for j in 0..self.width {
-                let a_val = match self.get_value(i, j) {
+        for row_one in 0..self.height{
+            let row_two = row_one + 1;
+            for col_one in 0..self.width {
+                let col_two = col_one + 1;
+
+                let top_left_val = match self.get_value(row_one, col_one) {
                     Ok(v) => v as f32,
                     Err(_) => continue
                 };
-                let b_val = match self.get_value(i, j + 1) {
+                let top_right_val = match self.get_value(row_one, col_two) {
                     Ok(v) => v as f32,
                     Err(_) => continue
                 };
-                let c_val = match self.get_value(i + 1, j) {
+                let bot_left_val = match self.get_value(row_two, col_one) {
                     Ok(v) => v as f32,
                     Err(_) => continue
                 };
-                let d_val = match self.get_value(i + 1, j + 1) {
+                let bot_right_val = match self.get_value(row_two, col_two) {
                     Ok(v) => v as f32,
                     Err(_) => continue
                 };
 
-                let a = a_val >= isoval;
-                let b = b_val >= isoval;
-                let c = c_val >= isoval;
-                let d = d_val >= isoval;
+                let top_left = top_left_val >= isoval;
+                let top_right = top_right_val >= isoval;
+                let bot_left = bot_left_val >= isoval;
+                let bot_right = bot_right_val >= isoval;
 
                 let mut pairs : Vec<(Point, Point)> = Vec::new();
-                if !a && !b && c && !d {
+                if bot_left && !(top_left || top_right || bot_right) {
                     // Case 1
-                } if !a && !b && !c && d {
+                    let x_one = (row_one as f32) + RawFile::get_inter_pos(isoval, top_left_val, bot_left_val);
+                    let y_two = (col_one as f32) + RawFile::get_inter_pos(isoval, bot_left_val, bot_right_val);
+
+                    pairs.push((Point::new(x_one, col_one as f32), Point::new(row_two as f32, y_two)));
+                }
+                if bot_right && !(top_left || top_right || bot_left) {
                     // Case 2
-                } if !a && !b && c && d {
-                    // Case 3
-                } if !a && b && !c && !d {
-                    // Case 4
-                } if !a && b && c && !d {
-                    // Case 5
-                } if !a && b && !c && d {
-                    // Case 6
-                } if !a && b && c && d {
-                    // Case 7
-                } if a && !b && !c && !d {
-                    // Case 8
-                } if a && !b && c && !d {
-                    // Case 9
-                } if a && !b && !c && d {
-                    // Case 10
-                } if a && !b && c && d {
-                    // Case 11
-                } if a && b && !c && !d {
-                    // Case 12
-                } if a && b && c && !d {
-                    // Case 13
-                } if a && b && !c && d {
-                    // Case 14
+                    let x_two = (row_one as f32) + RawFile::get_inter_pos(isoval, top_right_val, bot_right_val);
+                    let y_one = (col_one as f32) + RawFile::get_inter_pos(isoval, bot_left_val, bot_right_val);
+
+                    pairs.push((Point::new(row_two as f32, y_one), Point::new(x_two, col_two as f32)));
                 }
 
                 for pair in pairs {
