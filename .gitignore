@@ -3,6 +3,6 @@
 *.log
 *.synctex.gz
 *.zip
-*.DS_Store
+.DS_Store
 *.png
 *.jpg

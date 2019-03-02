@@ -1,0 +1,7 @@
+[package]
+name = "a5"
+version = "0.1.0"
+authors = ["Rofael Aleezada <me@rofael.com>"]
+edition = "2018"
+
+[dependencies]
