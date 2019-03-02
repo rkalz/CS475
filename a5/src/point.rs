@@ -1,7 +1,5 @@
-use std::cmp::{PartialEq, Eq};
-use std::hash::{Hash, Hasher};
+use std::string::ToString;
 
-#[derive(Clone, Copy)]
 pub struct Point {
     pub x : f32,
     pub y : f32,
@@ -13,17 +11,8 @@ impl Point {
     }
 }
 
-impl PartialEq for Point {
-    fn eq(&self, other: &Point) -> bool {
-        other.x == self.x && other.y == self.y
-    }
-}
-
-impl Eq for Point {}
-
-impl Hash for Point {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.x.to_string().hash(state);
-        self.y.to_string().hash(state);
+impl ToString for Point {
+    fn to_string(&self) -> String {
+        format!("{:.4} {:.4}", self.y, self.x)
     }
 }
