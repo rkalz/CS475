@@ -40,12 +40,24 @@ impl RawFile {
         (x - a) / (b - a)
     }
 
+    fn check_if_duo_in_bounds(x: f32, y: f32) -> bool {
+        x > 0.0 && x < 1.0 && y > 0.0 && y < 1.0
+    }
+
+    fn check_if_all_in_bounds(w: f32, x: f32, y: f32, z: f32) -> bool {
+        RawFile::check_if_duo_in_bounds(w, x) && RawFile::check_if_duo_in_bounds(y, z)
+    }
+
     pub fn build_and_write_isolines(&self, isoval: f32, path: &str) -> io::Result<()> {
-        let mut pairs : Vec<(Point, Point)> = Vec::new();
+        let mut unique_points : HashMap<String, usize> = HashMap::new();
+        let mut verts : Vec<String> = Vec::new();
+        let mut edges : Vec<(usize, usize)> = Vec::new();
+
         for row_one in 0..self.height{
             let row_two = row_one + 1;
             for col_one in 0..self.width {
                 let col_two = col_one + 1;
+                let mut pairs : Vec<(Point, Point)> = Vec::new();
 
                 let top_left_val = match self.get_value(row_one, col_one) {
                     Ok(v) => v as f32,
@@ -69,104 +81,101 @@ impl RawFile {
                 let bot_left = bot_left_val >= isoval;
                 let bot_right = bot_right_val >= isoval;
 
+                let row_one_f = row_one as f32;
+                let col_one_f = col_one as f32;
+                let row_two_f = row_two as f32;
+                let col_two_f = col_two as f32;
+
                 let lpx_offset = RawFile::get_inter_pos(isoval, top_left_val, bot_left_val);
-                let left_point = Point::new((row_one as f32) + lpx_offset, col_one as f32);
+                let left_point = Point::new(row_one_f + lpx_offset, col_one_f);
 
                 let tpy_offset = RawFile::get_inter_pos(isoval, top_left_val, top_right_val);
-                let top_point = Point::new( row_one as f32, (col_one as f32) + tpy_offset);
+                let top_point = Point::new(row_one_f, col_one_f + tpy_offset);
 
                 let bpy_offset = RawFile::get_inter_pos(isoval, bot_left_val, bot_right_val);
-                let bot_point = Point::new(row_two as f32, (col_one as f32) + bpy_offset);
+                let bot_point = Point::new(row_two_f, col_one_f + bpy_offset);
 
                 let rpx_offset = RawFile::get_inter_pos(isoval, top_right_val, bot_right_val);
-                let right_point = Point::new((row_two as f32) + rpx_offset, col_two as f32);
+                let right_point = Point::new(row_two_f + rpx_offset, col_two_f);
 
                 if top_left && top_right && bot_right {
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(lpx_offset, bpy_offset) {continue;}
+
                     pairs.push((left_point, bot_point)) // Case 14
                 } else if top_left && top_right && bot_left {
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(bpy_offset, rpx_offset) {continue;}
+
                     pairs.push((bot_point, right_point)) // Case 13
                 } else if top_left && top_right {
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(lpx_offset, rpx_offset) {continue;}
+
                     pairs.push((left_point, right_point)) // Case 12
                 } else if top_left && bot_left && bot_right {
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(tpy_offset, rpx_offset) {continue;}
+
                     pairs.push((top_point, right_point)) // Case 11
                 } else if top_left && bot_right {
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
-                    pairs.push((top_point, right_point)); // Case 10
+                    if !RawFile::check_if_all_in_bounds(tpy_offset, rpx_offset,
+                         lpx_offset, bpy_offset) {continue;}
 
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
+                    pairs.push((top_point, right_point)); // Case 10
                     pairs.push((left_point, bot_point))
                 } else if top_left && bot_left {
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(tpy_offset, bpy_offset) {continue;}
+
                     pairs.push((top_point, bot_point)); // Case 9
                 } else if top_left {
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(lpx_offset, tpy_offset) {continue;}
+
                     pairs.push((left_point, top_point)) // Case 8
                 } else if top_right && bot_left && bot_right {
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(lpx_offset, tpy_offset) {continue;}
+
                     pairs.push((left_point, top_point)) // Case 7
                 } else if top_right && bot_right {
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(tpy_offset, bpy_offset) {continue;}
+
                     pairs.push((top_point, bot_point)) // Case 6
                 } else if top_right && bot_left {
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
-                    pairs.push((left_point, top_point)); // Case 5
+                    if !RawFile::check_if_all_in_bounds(tpy_offset, rpx_offset,
+                         lpx_offset, bpy_offset) {continue;}
 
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
+                    pairs.push((left_point, top_point)); // Case 5
                     pairs.push((bot_point, right_point))
                 } else if top_right {
-                    if tpy_offset < 0.0 || tpy_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(tpy_offset, rpx_offset) {continue;}
+
                     pairs.push((top_point, right_point)) // Case 4
                 } else if bot_left && bot_right {
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(lpx_offset, rpx_offset) {continue;}
+
                     pairs.push((left_point, right_point)) // Case 3
                 } else if bot_right {
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
-                    if rpx_offset < 0.0 || rpx_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(bpy_offset, rpx_offset) {continue;}
+
                     pairs.push((bot_point, right_point)) // Case 2
                 } else if bot_left {
-                    if lpx_offset < 0.0 || lpx_offset > 1.0 { continue; }
-                    if bpy_offset < 0.0 || bpy_offset > 1.0 { continue; }
+                    if !RawFile::check_if_duo_in_bounds(lpx_offset, bpy_offset) {continue;}
+
                     pairs.push((left_point, bot_point)) // Case 1
                 }
+
+                for pair in pairs {
+                    if !unique_points.contains_key(&pair.0.to_string()) {
+                        verts.push(pair.0.to_string());
+                        unique_points.insert(pair.0.to_string(), verts.len());
+                    }
+                    if !unique_points.contains_key(&pair.1.to_string()) {
+                        verts.push(pair.1.to_string());
+                        unique_points.insert(pair.1.to_string(), verts.len());
+                    }
+
+                    let a_pos = *unique_points.get(&pair.0.to_string()).unwrap();
+                    let b_pos = *unique_points.get(&pair.1.to_string()).unwrap();
+
+                    if a_pos < b_pos {edges.push((a_pos, b_pos));}
+                }
             }
-        }
-
-        let mut unique_points : HashMap<String, usize> = HashMap::new();
-        let mut verts : Vec<String> = Vec::new();
-        let mut edges : Vec<(usize, usize)> = Vec::new();
-
-        for pair in pairs {
-            if !unique_points.contains_key(&pair.0.to_string()) {
-                verts.push(pair.0.to_string());
-                unique_points.insert(pair.0.to_string(), verts.len());
-            }
-            if !unique_points.contains_key(&pair.1.to_string()) {
-                verts.push(pair.1.to_string());
-                unique_points.insert(pair.1.to_string(), verts.len());
-            }
-
-            let a_pos = *unique_points.get(&pair.0.to_string()).unwrap();
-            let b_pos = *unique_points.get(&pair.1.to_string()).unwrap();
-
-            if a_pos < b_pos {edges.push((a_pos, b_pos));}
         }
 
         let mut f = File::create(path)?;
