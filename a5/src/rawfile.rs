@@ -49,15 +49,12 @@ impl RawFile {
     }
 
     pub fn build_and_write_isolines(&self, isoval: f32, path: &str) -> io::Result<()> {
-        let mut unique_points : HashMap<String, usize> = HashMap::new();
-        let mut verts : Vec<String> = Vec::new();
-        let mut edges : Vec<(usize, usize)> = Vec::new();
+        let mut pairs : Vec<(Point, Point)> = Vec::new();
 
         for row_one in 0..self.height{
             let row_two = row_one + 1;
             for col_one in 0..self.width {
                 let col_two = col_one + 1;
-                let mut pairs : Vec<(Point, Point)> = Vec::new();
 
                 let top_left_val = match self.get_value(row_one, col_one) {
                     Ok(v) => v as f32,
@@ -160,22 +157,27 @@ impl RawFile {
                     pairs.push((left_point, bot_point)) // Case 1
                 }
 
-                for pair in pairs {
-                    if !unique_points.contains_key(&pair.0.to_string()) {
-                        verts.push(pair.0.to_string());
-                        unique_points.insert(pair.0.to_string(), verts.len());
-                    }
-                    if !unique_points.contains_key(&pair.1.to_string()) {
-                        verts.push(pair.1.to_string());
-                        unique_points.insert(pair.1.to_string(), verts.len());
-                    }
-
-                    let a_pos = *unique_points.get(&pair.0.to_string()).unwrap();
-                    let b_pos = *unique_points.get(&pair.1.to_string()).unwrap();
-
-                    if a_pos < b_pos {edges.push((a_pos, b_pos));}
-                }
             }
+        }
+
+        let mut unique_points : HashMap<Point, usize> = HashMap::new();
+        let mut verts : Vec<Point> = Vec::new();
+        let mut edges : Vec<(usize, usize)> = Vec::new();
+
+        for pair in pairs {
+            if !unique_points.contains_key(&pair.0) {
+                verts.push(pair.0);
+                unique_points.insert(pair.0, verts.len());
+            }
+            if !unique_points.contains_key(&pair.1) {
+                verts.push(pair.1);
+                unique_points.insert(pair.1, verts.len());
+            }
+
+            let a_pos = *unique_points.get(&pair.0).unwrap();
+            let b_pos = *unique_points.get(&pair.1).unwrap();
+
+            if a_pos < b_pos {edges.push((a_pos, b_pos));}
         }
 
         let mut f = File::create(path)?;
