@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::*;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
@@ -27,11 +27,22 @@ impl RawFile {
         if pos >= self.buf.len() {
             return Result::Err(());
         }
-        return Result::Ok(self.buf[pos]);
+        Result::Ok(self.buf[pos])
+    }
+
+    fn get_inter_pos(x: f32, a: f32, b: f32) -> f32 {
+        if a == b {
+            return a;
+        }
+        if a > b {
+            return RawFile::get_inter_pos(x, b, a);
+        }
+        a + ((x - a) / (b - a))
     }
 
     pub fn build_and_write_isolines(&self, isoval: f32, path: &str) -> io::Result<()> {
-        let mut verts : HashMap<Point, usize> = HashMap::new();
+        let mut vert_pos : HashMap<Point, usize> = HashMap::new();
+        let mut verts : Vec<Point> = Vec::new();
         let mut edges : Vec<(usize, usize)> = Vec::new();
         for i in 0..self.height {
             for j in 0..self.width {
@@ -57,6 +68,7 @@ impl RawFile {
                 let c = c_val >= isoval;
                 let d = d_val >= isoval;
 
+                let mut pairs : Vec<(Point, Point)> = Vec::new();
                 if !a && !b && c && !d {
                     // Case 1
                 } if !a && !b && !c && d {
@@ -86,9 +98,31 @@ impl RawFile {
                 } if a && b && !c && d {
                     // Case 14
                 }
+
+                for pair in pairs {
+                    if !vert_pos.contains_key(&pair.0) {
+                        verts.push(pair.0);
+                        vert_pos.insert(pair.0, verts.len());
+                    } if !vert_pos.contains_key(&pair.1) {
+                        verts.push(pair.1);
+                        vert_pos.insert(pair.1, verts.len());
+                    }
+
+                    let a = *vert_pos.get(&pair.0).unwrap();
+                    let b = *vert_pos.get(&pair.1).unwrap();
+
+                    edges.push((a, b));
+                }
             }
         }
 
+        let mut f = File::create(path)?;
+        for vert in verts {
+            f.write_fmt(format_args!("v {0} {1} 0\n", vert.y, vert.x))?;
+        }
+        for edge in edges {
+            f.write_fmt(format_args!("l {0} {1}\n", edge.0, edge.1))?;
+        }
         Ok(())
     }
 

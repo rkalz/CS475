@@ -1,14 +1,21 @@
 use std::cmp::{PartialEq, Eq};
 use std::hash::{Hash, Hasher};
 
+#[derive(Clone, Copy)]
 pub struct Point {
-    x : f32,
-    y : f32,
+    pub x : f32,
+    pub y : f32,
+}
+
+impl Point {
+    pub fn new(_x : f32, _y : f32) -> Point {
+        Point{ x: _x, y: _y }
+    }
 }
 
 impl PartialEq for Point {
     fn eq(&self, other: &Point) -> bool {
-        return other.x == self.x && other.y == self.y;
+        other.x == self.x && other.y == self.y
     }
 }
 
