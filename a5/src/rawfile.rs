@@ -93,7 +93,7 @@ impl RawFile {
                 let bot_point = Point::new(row_two_f, col_one_f + bpy_offset);
 
                 let rpx_offset = RawFile::get_inter_pos(isoval, top_right_val, bot_right_val);
-                let right_point = Point::new(row_two_f + rpx_offset, col_two_f);
+                let right_point = Point::new(row_two_f + (1.0 - rpx_offset), col_two_f);
 
                 if top_left && top_right && bot_right {
                     if !RawFile::check_if_duo_in_bounds(lpx_offset, bpy_offset) {continue;}
@@ -120,7 +120,7 @@ impl RawFile {
                 } else if top_left && bot_left {
                     if !RawFile::check_if_duo_in_bounds(tpy_offset, bpy_offset) {continue;}
 
-                    pairs.push((top_point, bot_point)); // Case 9
+                    pairs.push((top_point, bot_point)) // Case 9
                 } else if top_left {
                     if !RawFile::check_if_duo_in_bounds(lpx_offset, tpy_offset) {continue;}
 
@@ -156,7 +156,6 @@ impl RawFile {
 
                     pairs.push((left_point, bot_point)) // Case 1
                 }
-
             }
         }
 
@@ -177,7 +176,7 @@ impl RawFile {
             let a_pos = *unique_points.get(&pair.0).unwrap();
             let b_pos = *unique_points.get(&pair.1).unwrap();
 
-            if a_pos < b_pos {edges.push((a_pos, b_pos));}
+            edges.push((a_pos.min(b_pos), a_pos.max(b_pos)));
         }
 
         let mut f = File::create(path)?;
