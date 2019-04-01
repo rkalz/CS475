@@ -128,7 +128,7 @@
                 .enter()
                 .append("circle")
                 .attr("fill", "black")
-                .attr("id", d => "point" + d.i + " " + d.j)
+                .attr("id", d => "point" + d.i + "_" + d.j)
                 .attr("r", 5)
                 .attr("cy", d => 10 + d.i * i_spacing)
                 .attr("cx", d => 2 * width / 3 + 30 + d.j * j_spacing)
@@ -140,20 +140,84 @@
         }
 
         function step() {
-            if (curr_i == n) return;
             if (curr_j == p) {
                 curr_i++;
                 curr_j = 0;
             }
+            if (curr_i == n) return;
+
+            console.log(curr_i + " " + curr_j)
+
+            if (curr_j == 0) {
+                // unhighlight last column
+                matrix_b_element.selectAll("#point" + (p - 1))
+                    .transition()
+                    .delay(100)
+                    .attr("fill", "black")
+
+                if (curr_i != 0) {
+                    // unhighlight previous row
+                    matrix_a_element.selectAll("#point" + (curr_i - 1))
+                        .transition()
+                        .delay(100)
+                        .attr("fill", "black")
+
+                    // unhighlight last output on previous row
+                    matrix_c_element.selectAll("#point" + (curr_i - 1) + "_" + (p - 1))
+                        .transition()
+                        .delay(100)
+                        .attr("fill", "black")
+                }
+
+                // highlight new row
+                matrix_a_element.selectAll("#point" + curr_i)
+                    .transition()
+                    .delay(100)
+                    .attr("fill", "red")
+            } else {
+                // unhighlight last output on this row
+                matrix_c_element.selectAll("#point" + curr_i + "_" + (curr_j - 1))
+                    .transition()
+                    .delay(100)
+                    .attr("fill", "black")
+
+                // unhighlight last column
+                matrix_b_element.selectAll("#point" + (curr_j - 1))
+                    .transition()
+                    .delay(100)
+                    .attr("fill", "black")
+            }
+
+            // highlight current column
+            matrix_b_element.selectAll("#point" + curr_j)
+                .transition()
+                .delay(100)
+                .attr("fill", "red")
+
+            // highlight current output
+            matrix_c_element.selectAll("#point" + curr_i + "_" + curr_j)
+                .transition()
+                .delay(100)
+                .attr("fill", "red")
+
+            curr_j++;
         }
 
-        function play() {
+        const sleep = (milliseconds) => {
+            return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
+
+
+        async function play() {
             in_prog = true
             curr_i = 0;
             curr_j = 0;
 
             while (curr_i < n) {
-                if (!in_prog) break;
+                if (!in_prog) {
+                    break;
+                }
+                await sleep(500)
                 step();
             }
         }
