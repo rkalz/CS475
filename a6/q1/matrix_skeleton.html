@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Matrix multiplication</title>
+    <style>
+
+    </style>
+
+    <script src="https://d3js.org/d3.v5.js"></script>
+</head>
+
+<body>
+
+    n: <input min=1 max=15 value=4 type="range" id="slidern">
+    m: <input min=1 max=15 value=4 type="range" id="sliderm">
+    p: <input min=1 max=15 value=4 type="range" id="sliderp">
+
+    <br>
+    <br>
+
+    <script>
+
+        var width = 800;
+        var height = 700;
+
+        svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("background", "lightyellow");
+
+        d3.select("#slidern").on("input", calculate_matrix_location)
+        d3.select("#sliderm").on("input", calculate_matrix_location)
+        d3.select("#sliderp").on("input", calculate_matrix_location)
+
+        let matrix_a_element = svg.append("g")
+            .attr("id", "mat_a_container")
+        let multply_sign = svg.append("text")
+            .text("X")
+            .attr("x", width / 3)
+            .attr("y", height / 2)
+        let matrix_b_element = svg.append("g")
+            .attr("id", "mat_b_container")
+        let equal_sign = svg.append("text")
+            .text("=")
+            .attr("x", 10 + 2 * width / 3)
+            .attr("y", height / 2)
+        let matrix_c_element = svg.append("g")
+            .attr("id", "mat_c_container")
+
+        let n;
+        let m;
+        let p;
+
+        let curr_i;
+        let curr_j;
+
+        calculate_matrix_location();
+
+	// This is the function where you draw your matrices
+        function calculate_matrix_location() {
+            in_prog = false;
+            matrix_a_element.selectAll("circle").remove()
+            matrix_b_element.selectAll("circle").remove()
+            matrix_c_element.selectAll("circle").remove()
+
+            // n - rows of left matrix
+            // m - cols of left matrix
+            // p - cols of right matrix
+
+            // n x m times m x p equals n x p
+
+            n = d3.select("#slidern").property("value")
+            m = d3.select("#sliderm").property("value")
+            p = d3.select("#sliderp").property("value")
+
+            let matrix_a_data = []
+            let matrix_b_data = []
+            let matrix_c_data = []
+
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < m; j++) {
+                    matrix_a_data.push({i: i, j: j})
+                }
+                for (let j = 0; j < p; j++) {
+                    matrix_c_data.push({i: i, j: j})
+                }
+            }
+            for (let i = 0; i < m; i++) {
+                for (let j = 0; j < p; j++) {
+                    matrix_b_data.push({i: i, j: j})
+                }
+            }
+
+            let i_spacing = height / n; // space btwn rows
+            let j_spacing = width / 3 / m; // space btwn cols
+
+            matrix_a_element.selectAll("circle")
+                .data(matrix_a_data)
+                .enter()
+                .append("circle")
+                .attr("fill", "black")
+                .attr("id", d => "point" + d.i)
+                .attr("r", 5)
+                .attr("cy", d => 10 + d.i * i_spacing)
+                .attr("cx", d => 10 + d.j * j_spacing)
+
+            i_spacing = height / m;
+            j_spacing = width / 3 / p;
+
+            matrix_b_element.selectAll("circle")
+                .data(matrix_b_data)
+                .enter()
+                .append("circle")
+                .attr("fill", "black")
+                .attr("id", d => "point" + d.j)
+                .attr("r", 5)
+                .attr("cy", d => 10 + d.i * i_spacing)
+                .attr("cx", d => width / 3 + 20 + d.j * j_spacing)
+
+            i_spacing = height / n;
+            j_spacing = (width - 100) / 3 / p;
+
+            matrix_c_element.selectAll("circle")
+                .data(matrix_c_data)
+                .enter()
+                .append("circle")
+                .attr("fill", "black")
+                .attr("id", d => "point" + d.i + " " + d.j)
+                .attr("r", 5)
+                .attr("cy", d => 10 + d.i * i_spacing)
+                .attr("cx", d => 2 * width / 3 + 30 + d.j * j_spacing)
+
+            curr_i = 0
+            curr_j = 0
+            console.log(n + "x" + m + " times " + m + "x" + p + " equals " + n + "x" + p)
+
+        }
+
+        function step() {
+            if (curr_i == n) return;
+            if (curr_j == p) {
+                curr_i++;
+                curr_j = 0;
+            }
+        }
+
+        function play() {
+            in_prog = true
+            curr_i = 0;
+            curr_j = 0;
+
+            while (curr_i < n) {
+                if (!in_prog) break;
+                step();
+            }
+        }
+
+        d3.select("body").append("br")
+        d3.select("body").append("button").text("Step").on("click", step);
+        d3.select("body").append("button").text("Play").on("click", play);
+
+    </script>
+
+
+</body>
+
+</html>
