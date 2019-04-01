@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Population Visualization</title>
+    <style>
+        rect {
+            opacity: 0.3;
+            stroke: white;
+        }
+        text {
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            fill: black;
+            font-size: 15px;
+        }
+    </style>
+
+    <script src="https://d3js.org/d3.v5.js"></script>
+</head>
+<body>
+
+    <script>
+        let width = 3000
+        let height = 2000
+        // 6 As, 3 NA, 6 Af, 6 Eu
+        const data = {
+            "name": "Earth",
+            "color": "lightgreen",
+            "children": [
+                {
+                    "name": "Asia",
+                    "color": "orange",
+                    "children": [
+                        {
+                            "name": "China",
+                            "value": 1420062022
+                        },
+                        {
+                            "name": "India",
+                            "value": 1368737513
+                        },
+                        {
+                            "name": "Indonesia",
+                            "value": 269536482
+                        },
+                        {
+                            "name": "Pakistan",
+                            "value": 204596442
+                        },
+                        {
+                            "name": "Bangladesh",
+                            "value": 168065920
+                        },
+                        {
+                            "name": "Russia",
+                            "value": 143895551
+                        },
+                    ]
+                },
+                {
+                    "name": "North America",
+                    "color": "green",
+                    "children": [
+                        {
+                            "name": "United States",
+                            "value": 329093110
+                        },
+                        {
+                            "name": "Mexico",
+                            "value": 132328035
+                        },
+                        {
+                            "name": "Canada",
+                            "value": 37279811
+                        },
+                        {
+                            "name": "Guatemala",
+                            "value": 16582469
+                        },
+                        {
+                            "name": "Honduras",
+                            "value": 9112867
+                        }
+                    ]
+                },
+                {
+                    "name": "Africa",
+                    "color": "blue",
+                    "children": [
+                        {
+                            "name": "Nigeria",
+                            "value": 200962417
+                        },
+                        {
+                            "name": "Ethiopia",
+                            "value": 110135635
+                        },
+                        {
+                            "name": "Egypt",
+                            "value": 101168745
+                        },
+                        {
+                            "name": "DR Congo",
+                            "value": 86727573
+                        },
+                        {
+                            "name": "South Africa",
+                            "value": 58065097
+                        },
+                        {
+                            "name": "Uganda",
+                            "value": 45711874
+                        },
+                    ]
+                },
+                {
+                    "name": "Europe",
+                    "color": "purple",
+                    "children": [
+                    {
+                            "name": "Germany",
+                            "value": 82438639
+                        },
+                        {
+                            "name": "UK",
+                            "value": 66959016
+                        },
+                        {
+                            "name": "France",
+                            "value": 82438639
+                        },
+                        {
+                            "name": "Italy",
+                            "value": 59216525
+                        },
+
+                        {
+                            "name": "Spain",
+                            "value": 46441049
+                        },
+
+                        {
+                            "name": "Ukraine",
+                            "value": 43795220
+                        }
+                    ]
+                }
+            ]
+        }
+
+        let svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+
+        let treeMapContainer = svg.append("g")
+            .attr("id", "treemap")
+
+        let treeMapLayout = d3.treemap()
+            .size([width / 2, height / 2])
+            .paddingOuter(25)
+
+        let root = d3.hierarchy(data)
+        root.sum(d => d.value)
+        treeMapLayout(root)
+
+        let treeMapNodes = treeMapContainer.selectAll('g')
+            .data(root.descendants())
+            .enter()
+            .append('g')
+            .attr('transform', d => 'translate(' + [d.x0, d.y0] + ')')
+
+        treeMapNodes.append('rect')
+            .attr('fill', d => d.data.color)
+            .attr('width', d => d.x1 - d.x0)
+            .attr('height', d => d.y1 - d.y0)
+
+        treeMapNodes.append('text')
+            .attr('dx', 10)
+            .attr('dy', 20)
+            .text(d => d.data.name)
+
+    </script>
+
+</body>
+</html>
