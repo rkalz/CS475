@@ -10,7 +10,7 @@
         }
         text {
             font-family: "Helvetica Neue", Helvetica, sans-serif;
-            fill: black;
+            fill: white;
             font-size: 15px;
         }
     </style>
@@ -179,6 +179,33 @@
             .attr('dx', 10)
             .attr('dy', 20)
             .text(d => d.data.name)
+
+        let packContainer = svg.append("g")
+            .attr("id", "pack")
+            .attr('x', '1000')
+
+        root = d3.hierarchy(data)
+        root.sum(d => d.value)
+        let packLayout = d3.pack()
+        packLayout.size([width / 2, height / 2])
+        packLayout(root)
+
+        let packNodes = packContainer.selectAll('g')
+            .data(root.descendants())
+            .enter()
+            .append('g')
+            .attr('transform', 'translate(0, 1100)')
+
+        packNodes.append('circle')
+            .attr('fill', d => d.parent === null ? d.data.color : d.parent.data.color)
+            .attr('cx', d => d.x)
+            .attr('cy', d => d.y)
+            .attr('r', d => d.r)
+
+        packNodes.append('text')
+            .attr('dx', d => d.x - 20)
+            .attr('dy', d => d.y)
+            .text(d => d.children === undefined ? d.data.name : '')
 
     </script>
 
