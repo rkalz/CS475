@@ -42,7 +42,7 @@
             .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
 
-        d3.json("dates.json").then(data => {
+        d3.json("json/dates.json").then(data => {
             data.forEach(d => {
                 d.date = dateParse(d.date)
                 d.count = +d.count

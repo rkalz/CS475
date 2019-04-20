@@ -54,7 +54,7 @@
             .size([width, height])
         const path = sankey.link()
 
-        d3.json("mentions.json").then(data => {
+        d3.json("json/mentions.json").then(data => {
             const graph = {
                 nodes: [],
                 links: []
