@@ -3,72 +3,83 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Time of Day Visualization</title>
+    <title>Date Visualization</title>
     <script src="https://d3js.org/d3.v5.js"></script>
-    <link rel="stylesheet" type="text/css" href="bargraph.css">
 </head>
+
+<style>
+    path {
+        stroke: steelblue;
+        stroke-width: 3;
+        fill: none;
+    }
+
+    #dataline {
+        stroke-width: 5;
+    }
+
+    svg text {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+    }
+</style>
 
 <body>
     <script>
-        const svg = d3.select("body").append("svg")
-            .attr("width", 960)
-            .attr("height", 500)
-
         const margin = {
-            top: 20,
-            right: 20,
-            bottom: 100,
-            left: 75
+            top: 60,
+            right: 40,
+            bottom: 60,
+            left: 100
         }
-        const width = +svg.attr("width") - margin.left - margin.right;
-        const height = +svg.attr("height") - margin.top - margin.bottom;
+        const height = 500 - margin.left - margin.right
+        const width = 1200 - margin.top - margin.bottom
 
-        const g = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        const x = d3.scaleBand()
-            .rangeRound([0, width])
-            .padding(0.1)
-        const y = d3.scaleLinear()
-            .rangeRound([height, 0])
+        const x = d3.scaleLinear().range([0, width])
+        const y = d3.scaleLinear().range([height, 0])
+        const xAxis = d3.axisBottom(x)
+        const yAxis = d3.axisLeft(y)
+        const valueLine = d3.line()
+            .x(d => x(d.hour))
+            .y(d => y(d.count))
+
+        const svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
 
         d3.json("json/times.json").then(data => {
-            x.domain(data.map(d => d.hour))
+            x.domain(d3.extent(data, d => d.hour))
             y.domain([0, d3.max(data, d => d.count)])
 
-            g.append("g")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x))
-                .append("text")
-                    .attr("fill", "#000")
-                    .attr("x", 425)
-                    .attr("y", 50)
-                    .attr("dy", "0.71em")
-                    .attr("text-anchor", "middle")
-                    .text("Hour of Day (US Central)")
+            svg.append("path")
+                .attr("class", "line")
+                .attr("id", "dataline")
+                .attr("d", valueLine(data))
 
-            g.append("g")
-                .call(d3.axisLeft(y))
-                .append("text")
-                    .attr("fill", "#000")
+            svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0, " + height + ")")
+                .call(xAxis)
+            svg.append("text")
+                .attr("transform",
+                    "translate(" + (width / 2) + " ," +
+                                (height + margin.top + 10) + ")")
+                .style("text-anchor", "middle")
+                .text("Hour of Day (US Central)")
+
+            svg.append("g")
+                .attr("class", "y-axis")
+                .call(yAxis)
+                svg.append("text")
                     .attr("transform", "rotate(-90)")
-                    .attr("x", -50)
-                    .attr("y", 20)
-                    .attr("dy", "0.71em")
-                    .attr("text-anchor", "middle")
-                    .text("Messages")
-
-            console.log(data)
-            g.selectAll(".bar")
-                .data(data)
-                .enter()
-                .append("rect")
-                .attr("class", "bar")
-                .attr("x", d => x(d.hour))
-                .attr("y", d => y(d.count))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.count))
-        })
-
+                    .attr("y", 0 - margin.left)
+                    .attr("x", 0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Number of Messages");
+                })
     </script>
 </body>
 </html>

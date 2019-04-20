@@ -14,7 +14,7 @@
         const units = "Likes"
 
         const margin = {
-            top: 10,
+            top: 100,
             right: 10,
             bottom: 10,
             left: 10
@@ -41,17 +41,17 @@
         svg.append("text")
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
-            .attr("y", 10)
+            .attr("y", -10)
             .text("Like Graph")
         svg.append("text")
             .attr("text-anchor", "middle")
             .attr("x", 100)
-            .attr("y", 10)
+            .attr("y", -10)
             .text("Senders of Likes")
         svg.append("text")
             .attr("text-anchor", "middle")
             .attr("x", 1300)
-            .attr("y", 10)
+            .attr("y", -10)
             .text("Receiver of Likes")
 
         d3.json("json/likes.json").then(data => {

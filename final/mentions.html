@@ -14,7 +14,7 @@
         const units = "Mentions"
 
         const margin = {
-            top: 10,
+            top: 100,
             right: 10,
             bottom: 10,
             left: 10
@@ -35,17 +35,17 @@
         svg.append("text")
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
-            .attr("y", 10)
+            .attr("y", -10)
             .text("Mention Graph")
         svg.append("text")
             .attr("text-anchor", "middle")
             .attr("x", 100)
-            .attr("y", 10)
+            .attr("y", -10)
             .text("Sender of Mentions")
         svg.append("text")
             .attr("text-anchor", "middle")
             .attr("x", 1300)
-            .attr("y", 10)
+            .attr("y", -10)
             .text("User Mentioned")
 
         const sankey = d3.sankey()
