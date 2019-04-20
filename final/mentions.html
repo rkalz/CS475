@@ -6,31 +6,9 @@
     <title>Date Visualization</title>
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="sankey.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="sankey.css">
 </head>
 
-<style>
-    .node rect {
-        cursor: move;
-        fill-opacity: 0.9;
-        shape-rendering: crispEdges;
-    }
-
-    .node text {
-        pointer-events: none;
-        text-shadow: 0 1px 0 #fff;
-    }
-
-    .link {
-        fill: none;
-        stroke: #000;
-        stroke-opacity: .2;
-    }
-
-    .link:hover {
-        stroke-opacity: .2;
-    }
-</style>
 <body>
     <script>
         const units = "Mentions"
@@ -53,6 +31,22 @@
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", 10)
+            .text("Mention Graph")
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", 100)
+            .attr("y", 10)
+            .text("Sender of Mentions")
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", 1300)
+            .attr("y", 10)
+            .text("User Mentioned")
 
         const sankey = d3.sankey()
             .nodeWidth(36)
@@ -133,7 +127,7 @@
                 .attr("dy", ".35em")
                 .attr("text-anchor", "end")
                 .attr("transform", null)
-                .text(d => d.name.replace(/\./g, ''))
+                .text(d => d.name.replace(/\./g, '') + ": " + d.value)
                 .filter(d => d.x < width / 2)
                 .attr("x", 6 + sankey.nodeWidth())
                 .attr("text-anchor", "start")
