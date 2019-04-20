@@ -33,7 +33,7 @@
 </style>
 <body>
     <script>
-        const units = "Likes"
+        const units = "Mentions"
 
         const margin = {
             top: 10,
@@ -60,18 +60,18 @@
             .size([width, height])
         const path = sankey.link()
 
-        d3.json("likes.json").then(data => {
+        d3.json("mentions.json").then(data => {
             const graph = {
                 nodes: [],
                 links: []
             }
 
             data.forEach(d => {
-                graph.nodes.push(d.target)
                 graph.nodes.push(d.source)
+                graph.nodes.push(d.target)
                 graph.links.push({
-                    source: d.target,
-                    target: d.source,
+                    source: d.source,
+                    target: d.target,
                     value: d.value
                 })
             })
@@ -97,10 +97,16 @@
                 .attr("class", "link")
                 .attr("d", path)
                 .style("stroke-width", d => Math.max(1, d.dy))
-                .style("stroke", d => color(d.source.node))
+                .style("stroke", (d, i) => {
+                    for (let j = 0; j < graph.nodes.length; j++) {
+                        const node = graph.nodes[j]
+                        if (node.name === d.source.name.replace(/\./g, '')) return color(j)
+                    }
+                    return color(i)
+                })
                 .sort((a, b) => b.dy - a.dy)
             link.append("title")
-                .text(d => d.source.name + " -> " + d.target.name.replace(/\./g, '') + "\n" + format(d.value))
+                .text(d => d.source.name.replace(/\./g, '') + " -> " + d.target.name + "\n" + format(d.value))
 
             const node = svg.append("g").selectAll(".node")
                 .data(graph.nodes)
