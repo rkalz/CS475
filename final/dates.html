@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Date Visualization</title>
+    <script src="https://d3js.org/d3.v5.js"></script>
+</head>
+
+<style>
+    path {
+        stroke: steelblue;
+        stroke-width: 2;
+        fill: none;
+    }
+</style>
+
+<body>
+    <script>
+        const margin = {
+            top: 60,
+            right: 40,
+            bottom: 60,
+            left: 100
+        }
+        const height = 500 - margin.left - margin.right
+        const width = 1200 - margin.top - margin.bottom
+
+        const dateParse = d3.timeParse("%B %d, %Y")
+
+        const x = d3.scaleTime().range([0, width])
+        const y = d3.scaleLinear().range([height, 0])
+        const xAxis = d3.axisBottom(x)
+        const yAxis = d3.axisLeft(y)
+        const valueLine = d3.line()
+            .x(d => x(d.date))
+            .y(d => y(d.count))
+
+        const svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+
+        d3.json("dates.json").then(data => {
+            data.forEach(d => {
+                d.date = dateParse(d.date)
+                d.count = +d.count
+            })
+
+            x.domain(d3.extent(data, d => d.date))
+            y.domain([0, d3.max(data, d => d.count)])
+
+            svg.append("path")
+                .attr("class", "line")
+                .attr("d", valueLine(data))
+
+            svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0, " + height + ")")
+                .call(xAxis)
+            svg.append("text")
+                .attr("transform",
+                    "translate(" + (width / 2) + " ," +
+                                (height + margin.top + 10) + ")")
+                .style("text-anchor", "middle")
+                .text("Date")
+
+            svg.append("g")
+                .attr("class", "y-axis")
+                .call(yAxis)
+                svg.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 0 - margin.left)
+                    .attr("x", 0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Number of Messages");
+                })
+    </script>
+</body>
+</html>
